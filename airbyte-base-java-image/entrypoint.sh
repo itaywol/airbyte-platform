@@ -2,6 +2,6 @@
 
 set -e
 
-update-ca-trust
+update-ca-certificates
 
 exec "$@"

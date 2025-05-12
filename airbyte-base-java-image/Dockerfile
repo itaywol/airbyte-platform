@@ -1,20 +1,22 @@
-FROM amazoncorretto:21
+FROM r.echohq.com/amazoncorretto:21
 
 WORKDIR /app
 
 RUN <<EOF
-yum install -y tar shadow-utils
-yum update -y --security
-yum clean all
-rm -rf /var/cache/yum
+# echo base comes with shadow-utils installed
+apt-get update
+apt-get install -y tar ca-certificates
+apt-get upgrade -y
+apt-get clean
+rm -rf /var/lib/apt/lists/*
 groupadd --gid 1000 airbyte
 useradd --uid 1000 --gid airbyte --shell /bin/bash --create-home airbyte
 # Create mount point for secrets
 mkdir /secrets
 chown -R airbyte:airbyte /secrets
 chown -R airbyte:airbyte /app
-chown -R airbyte:airbyte /usr/share/pki/ca-trust-source
-chown -R airbyte:airbyte /etc/pki/ca-trust
+chown -R airbyte:airbyte /etc/ssl/certs
+chown -R airbyte:airbyte /usr/local/share/ca-certificates
 mkdir -p /tmp/workspace
 chown -R airbyte:airbyte /tmp/workspace
 mkdir -p /tmp/airbyte_local
